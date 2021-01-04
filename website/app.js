@@ -57,7 +57,7 @@ const postData = async (url = '', data = {}) => {
         return newData;
     }
     catch (error) {
-        console.log('Error', error);
+        console.log('error', error);
     }
 }
 
