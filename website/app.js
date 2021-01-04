@@ -1,14 +1,14 @@
 /* Global Variables */
-
+//get api from the website
 let baseURL = 'https://api.openweathermap.org/data/2.5/weather?zip=';
 let key = '661daa7377189bfe425b6af1f07ac279';
 
 // Create a new date instance dynamically with JS
 let d = new Date();
 let newDate = d.toLocaleString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
-
+//click event to the button
 document.getElementById('generate').addEventListener('click', performAction);
-
+//callback fun of the event which generate date and get the temp from api
 function performAction(e){
     const postCode = document.getElementById('zip').value;
     const feelings = document.getElementById('feelings').value;
@@ -26,7 +26,7 @@ function performAction(e){
 
 // Async GET
 const getTemperature = async (baseURL, code, key)=>{
-// const getTemperatureDemo = async (url)=>{
+
     const response = await fetch(baseURL + code + ',us' + '&APPID=' + key)
     console.log(response);
     try {
