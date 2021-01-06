@@ -16,7 +16,10 @@ The body-parser package should be installed by npm install body-parser and inclu
 - Api send a response of temp .
 - user write his feeling and post data send this + auto generated date to a localserver.
 - update UI log the temp and date.
- 
+ ### Weather API
+ get your unique API from [OpenWeather API](https://openweathermap.org/current)
 
 ### Languages 
 HTML,CSS,Javascript
+#### Run the server
+use the command "node server.js" to run the server
