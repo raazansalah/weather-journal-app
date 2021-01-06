@@ -23,3 +23,4 @@ The body-parser package should be installed by npm install body-parser and inclu
 HTML,CSS,Javascript
 #### Run the server
 use the command "node server.js" to run the server
+accsess the page by `http://localhost:8080/`
