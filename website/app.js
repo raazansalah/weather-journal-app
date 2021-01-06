@@ -1,77 +1,77 @@
 /* Global Variables */
-//get api from the website
-let baseURL = 'https://api.openweathermap.org/data/2.5/weather?zip=';
-let key = '661daa7377189bfe425b6af1f07ac279';
-
-// Create a new date instance dynamically with JS
+// get date by function with js
 let d = new Date();
-let newDate = d.toLocaleString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
-//click event to the button
-document.getElementById('generate').addEventListener('click', performAction);
+let newDate = d.getDate() +'/' + d.getMonth()+1 +  '/' + d.getFullYear();
+const date=document.getElementById("date");
+const temp =document.getElementById("temp");
+const feel=document.getElementById("content");
+// API & base URL from WEATHERAPI website
+let baseURL = "https://api.openweathermap.org/data/2.5/weather?zip=";
+let key = "&appid=d238b55b3a27d21c482eec9d42462fc0&units=imperial";
+// acseeing feel ,temp, date from DOM
+
+
+//click event to the button by clivk event listenr
+document.getElementById("generate").addEventListener("click", generateAction);
 //callback fun of the event which generate date and get the temp from api
-function performAction(e){
-    const postCode = document.getElementById('zip').value;
-    const feelings = document.getElementById('feelings').value;
-    console.log(newDate);
-    getTemperature(baseURL, postCode, key)
-    .then(function (data){
-        // Add data to POST request
-        postData('http://localhost:8080/addWeatherData', {temperature: data.main.temp, date: newDate, user_response: feelings } )
-        // Function which updates UI
-        .then(function() {
-            updateUI()
-        })
+function generateAction(e) {
+  //get user inputs from DOM
+  const zipCode = document.getElementById("zip").value;
+  const feelings = document.getElementById("feelings").value;
+  getTemp(baseURL, zipCode, key).then(function (Udata) {
+    // POST request
+    postData("http://localhost:8000/addWeatherData", {
+      temperature: Udata.main.temp,
+      date: newDate,
+      user_response: feelings,
     })
+      //call update ui function
+        updateUI();
+  });
 }
 
-// Async GET
-const getTemperature = async (baseURL, code, key)=>{
+// fuction to get abi data
+const getTemp= async (baseURL, code, apikey) => {
+  const res = await fetch(baseURL + code  + apikey);
+  try {
+    const Udata = await res.json();
+    return Udata;
+  } catch (error) {
+    //log the error
+    console.log( error);
+  }
+};
 
-    const response = await fetch(baseURL + code + ',us' + '&APPID=' + key)
-    console.log(response);
-    try {
-        const data = await response.json();
-        console.log(data);
-        console.log('PIRMAS');
-        return data;
-    }
-    catch(error) {
-        console.log('error', error);
-    }
-}
+// functio to POST the data
+const postData = async (url = "", data = {}) => {
+  const res = await fetch(url, {
+    method: "POST",
+    credentials: "same-origin",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    //body data tybe should match the content-type header
+    body: JSON.stringify(data),//JSON string from JS object
+  });
+  try {
+    
+    const newData = await res.json();
+    return newData;
+  } catch (error) {
+    console.log(error);
+  }
+};
 
-// Async POST
-const postData = async (url = '', data = {}) => {
-    const postRequest = await fetch(url, {
-        method: 'POST',
-        credentials: 'same-origin',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-    });
-    try {
-        console.log('ANTRAS');
-        const newData = await postRequest.json();
-        console.log(newData, 'ANTRAS VEL');
-        return newData;
-    }
-    catch (error) {
-        console.log('error', error);
-    }
-}
-
-// Update user interface
+// function to Update uI
 const updateUI = async () => {
-    const request = await fetch('http://localhost:8080/all');
-    try {
-        const allData = await request.json();
-        console.log('TRECIAS');
-        document.getElementById('date').innerHTML = allData.date;
-        document.getElementById('temp').innerHTML = allData.temperature;
-        document.getElementById('content').innerHTML = allData.user_response;
-    }
-    catch (error) {
-        console.log('error', error);
-    }
-}
+  const req = await fetch("http://localhost:8000/getWeatherData");
+  try {
+    const allData = await req.json();
+  
+   date.innerHTML = allData.date;
+    temp.innerHTML = allData.temperature;
+    feel.innerHTML = allData.user_response;
+  } catch (error) {
+    console.log( error);
+  }
+};
