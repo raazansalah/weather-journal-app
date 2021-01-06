@@ -1,51 +1,42 @@
-// Setup empty JS object to act as endpoint for all routes
-projectData = {};
+const express = require("express"); // EXPRESS TO HAVE ACCESS TO SERVER AND ROUTES AND MIDDLEWARES
+const bodyParser = require("body-parser"); // BODY-PARSER TO PARSE INCOMING REQUEST BODIES IN  A MIDDLEWARE
+const cors = require("cors"); // CORS FOR CROSS ORIGIN ALLOWANCE
 
-// Require Express to run server and routes
-const express = require('express');
+// SETUP EMPTY JS OBJECT TO ACT AS ENDPOINT FOR ALL ROUTES
+weatherData = {};
 
-// Start up an instance of app
+// DEFINE APP AS AN EXPRESS APPLICATION
 const app = express();
 
-/* Dependencies */
-const bodyParser = require('body-parser');
-
-/* Middleware*/
-//Here we are configuring express to use body-parser as middle-ware.
+// MIDDLEWARE
+// CONFIGURING EXPRESS TO USE BODY-PARSER AS MIDDLEWARE
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-
-// Cors for cross origin allowance
-const cors = require('cors');
+// CONFIGURING EXPRESS TO USE CORS AS MIDDLEWARE
 app.use(cors());
 
-// Initialize the main project folder
-app.use(express.static('website'));
-const port = 8080;
+// TO USE THE STATIC FILES IN THE WEBSITE FOLDER
+app.use(express.static("website"));
+const port = 8000; // DEFINING THE PORT
 
-//Spin up the server
-const server = app.listen(port, listening);
+// START THE SERVER
+app.listen(port, () => {
+  console.log(`app running on port ${port}...`); // TO MAKE SURE THAT THE SERVE IS RUNNING
+});
 
-// Callback to debug
-function listening(){
-    console.log('server running');
-    console.log(`running on localhost: ${port}`);
-};
+// ROUTES
+// GET ROUTE TO SEND DATA TO THE CLIENT , POST ROUTE TO ADD DATA TO THE SERVER
+app.get("/getWeatherData", sendData).post("/addWeatherData", addData);
 
-//GET route that returns the projectData object
-app.get('/all', sendData)
-
-function sendData (request, response) {
-    response.send(projectData)
+// ROUTE HANDLERS
+function addData(req, res) {
+  weatherData.temperature = req.body.temperature;
+  weatherData.date = req.body.date;
+  weatherData.user_response = req.body.user_response;
+  res.end();
+  console.log(weatherData);
 }
 
-// POST route
-app.post('/addWeatherData', addData)
-
-function addData(request, response) {
-    projectData.temperature = request.body.temperature;
-    projectData.date = request.body.date;
-    projectData.user_response = request.body.user_response;
-    response.end();
-    console.log(projectData)
+function sendData(req, res) {
+  res.send(weatherData);
 }
